@@ -134,6 +134,10 @@ Use `python scripts/image_gen.py --help` for a full list of arguments.
 
 Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details on our development process and standards.
 
-## ⚖️ License
+## Disclaimer
 
-[License details go here]
+This is not an officially supported Google product.
+
+## License
+
+This project is licensed under the Apache License, Version 2.0. See the [LICENSE](LICENSE) file for details.
