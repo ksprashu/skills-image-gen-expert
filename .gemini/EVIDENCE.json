@@ -1,0 +1,44 @@
+[
+  {
+    "ID": "E-001",
+    "Topic": "Repository Structure",
+    "Source": "ls -R",
+    "Why authoritative": "Direct file system observation",
+    "Last-checked": "2026-04-04"
+  },
+  {
+    "ID": "E-002",
+    "Topic": "Dependencies",
+    "Source": "requirements.txt",
+    "Why authoritative": "Official dependency manifest",
+    "Last-checked": "2026-04-04"
+  },
+  {
+    "ID": "E-003",
+    "Topic": "Core Logic",
+    "Source": "scripts/image_gen.py",
+    "Why authoritative": "Implementation source code",
+    "Last-checked": "2026-04-04"
+  },
+  {
+    "ID": "E-004",
+    "Topic": "Project Vision",
+    "Source": "README.md",
+    "Why authoritative": "Official project documentation",
+    "Last-checked": "2026-04-04"
+  },
+  {
+    "ID": "E-008",
+    "Topic": "Repository URL",
+    "Source": "git remote -v",
+    "Why authoritative": "Direct command output from git",
+    "Last-checked": "2026-04-04"
+  },
+  {
+    "ID": "E-009",
+    "Topic": "Link Verification",
+    "Source": "grep \"YOUR_ORG\" README.md CONTRIBUTING.md",
+    "Why authoritative": "Search for remaining placeholders.",
+    "Last-checked": "2026-04-04"
+  }
+]

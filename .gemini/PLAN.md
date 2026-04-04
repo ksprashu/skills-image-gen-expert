@@ -1,18 +1,15 @@
 # Implementation Plan
 
 ## 1. Objective
-Thoroughly document the `skills-image-gen-expert` repository by enhancing the `README.md`, `SKILL.md`, and adding a `CONTRIBUTING.md` guide.
+Update `README.md` and `CONTRIBUTING.md` by replacing all placeholder GitHub URLs (`https://github.com/YOUR_ORG/...`) with the correct repository URL (`https://github.com/ksprashu/skills-image-gen-expert.git`).
 
 ## 2. Strategic Analysis
-The goal is to elevate the project's documentation from basic to comprehensive.
-- **README.md** needs an architecture diagram/explanation, repository structure breakdown, and advanced usage examples.
-- **SKILL.md** needs explicit instructions for *AI agents* (how they should use the script, handle verification loops, and access built-in assets).
-- **CONTRIBUTING.md** is missing and should be created to guide future developers.
+This is a straightforward find-and-replace operation. The objective is clearly defined by the findings in the Perception phase.
+- **Risk Assessment:** Low. Modifying documentation files only. No functional code changes. The only risk is missing a placeholder or introducing a typo, which is mitigated by simple search/replace and verification.
 
 ## 3. Implementation Roadmap
-- [x] **Task 1: Create `CONTRIBUTING.md`** - Add developer setup instructions, coding standards, and PR guidelines.
-- [x] **Task 2: Enhance `README.md`** - Add Architecture/Workflow explanation, Repository Structure map, and Advanced Examples.
-- [x] **Task 3: Enhance `SKILL.md`** - Add "Agent Instructions" detailing error handling, retry logic, and built-in asset utilization.
+- [x] **Task 1: Update `README.md`** - Replace `https://github.com/YOUR_ORG/image-gen-expert.git` with `https://github.com/ksprashu/skills-image-gen-expert.git`.
+- [x] **Task 2: Update `CONTRIBUTING.md`** - Replace `https://github.com/YOUR_ORG/skills-image-gen-expert.git` with `https://github.com/ksprashu/skills-image-gen-expert.git`.
 
 ## 4. Review
 Plan established. Awaiting execution approval.

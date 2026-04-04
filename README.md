@@ -60,7 +60,7 @@ You can install this skill directly using the Gemini CLI.
 To install this skill directly from the repository into your local workspace:
 
 ```bash
-gemini skills install https://github.com/YOUR_ORG/image-gen-expert.git --scope workspace
+gemini skills install https://github.com/ksprashu/skills-image-gen-expert.git --scope workspace
 ```
 
 *(Note: If you want this available across all your projects globally, change `--scope workspace` to `--scope user` or omit the flag).*
@@ -71,7 +71,7 @@ If you clone the repository locally and want to use or edit the skill:
 
 1.  Clone the repository:
     ```bash
-    git clone https://github.com/YOUR_ORG/image-gen-expert.git
+    git clone https://github.com/ksprashu/skills-image-gen-expert.git
     cd image-gen-expert
     ```
 

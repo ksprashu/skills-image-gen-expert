@@ -12,7 +12,7 @@ Thank you for your interest in contributing to the Image Generation Expert skill
 ### 2. Setup
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/YOUR_ORG/skills-image-gen-expert.git
+    git clone https://github.com/ksprashu/skills-image-gen-expert.git
     cd skills-image-gen-expert
     ```
 
