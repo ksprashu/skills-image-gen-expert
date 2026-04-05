@@ -30,6 +30,7 @@ Refactor the `image-gen-expert` skill to transition from a narrow, pre-existing 
 - [x] **Task 1: Overhaul `SKILL.md`** - Rewrite capabilities and agent instructions to focus on "Dynamic Blog Asset Generation", "Infographics", and "Style Consistency" over character consistency.
 - [x] **Task 2: Clean up `assets/` directory** - Delete legacy `char-*.png` files and optionally add a generic `style-reference.png` to demonstrate brand consistency without locking into specific characters.
 - [x] **Task 3: Update `README.md`** - Align the public-facing documentation with the new dynamic, from-scratch asset generation paradigm.
+- [x] **Task 4: Implement Secure API Key Prompting** - Update `SKILL.md` with explicit agent instructions for `ask_user` and reuse. Refine `scripts/image_gen.py` error messaging. Update `README.md`.
 
 ## 8. Review
 Plan established. Awaiting user feedback or execution approval.

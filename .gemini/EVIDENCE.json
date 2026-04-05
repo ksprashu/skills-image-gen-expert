@@ -1,44 +1,65 @@
 [
   {
-    "ID": "E-001",
-    "Topic": "Repository Structure",
-    "Source": "ls -R",
-    "Why authoritative": "Direct file system observation",
-    "Last-checked": "2026-04-04"
+    "id": "E-001",
+    "topic": "Repository Structure",
+    "source": "ls -R",
+    "why": "Direct file system observation",
+    "lastChecked": "2026-04-04"
   },
   {
-    "ID": "E-002",
-    "Topic": "Dependencies",
-    "Source": "requirements.txt",
-    "Why authoritative": "Official dependency manifest",
-    "Last-checked": "2026-04-04"
+    "id": "E-002",
+    "topic": "Dependencies",
+    "source": "requirements.txt",
+    "why": "Official dependency manifest",
+    "lastChecked": "2026-04-04"
   },
   {
-    "ID": "E-003",
-    "Topic": "Core Logic",
-    "Source": "scripts/image_gen.py",
-    "Why authoritative": "Implementation source code",
-    "Last-checked": "2026-04-04"
+    "id": "E-003",
+    "topic": "Core Logic",
+    "source": "scripts/image_gen.py",
+    "why": "Implementation source code",
+    "lastChecked": "2026-04-04"
   },
   {
-    "ID": "E-004",
-    "Topic": "Project Vision",
-    "Source": "README.md",
-    "Why authoritative": "Official project documentation",
-    "Last-checked": "2026-04-04"
+    "id": "E-004",
+    "topic": "Project Vision",
+    "source": "README.md",
+    "why": "Official project documentation",
+    "lastChecked": "2026-04-04"
   },
   {
-    "ID": "E-008",
-    "Topic": "Repository URL",
-    "Source": "git remote -v",
-    "Why authoritative": "Direct command output from git",
-    "Last-checked": "2026-04-04"
+    "id": "E-008",
+    "topic": "Repository URL",
+    "source": "git remote -v",
+    "why": "Direct command output from git",
+    "lastChecked": "2026-04-04"
   },
   {
-    "ID": "E-009",
-    "Topic": "Link Verification",
-    "Source": "grep \"YOUR_ORG\" README.md CONTRIBUTING.md",
-    "Why authoritative": "Search for remaining placeholders.",
-    "Last-checked": "2026-04-04"
+    "id": "E-009",
+    "topic": "Link Verification",
+    "source": "grep \"YOUR_ORG\" README.md CONTRIBUTING.md",
+    "why": "Search for remaining placeholders.",
+    "lastChecked": "2026-04-04"
+  },
+  {
+    "id": "E-013",
+    "topic": "API Key Prompting",
+    "source": "SKILL.md, README.md",
+    "why": "Documentation of the secure prompting protocol",
+    "lastChecked": "2026-04-05"
+  },
+  {
+    "id": "E-014",
+    "topic": "Error Messaging",
+    "source": "scripts/image_gen.py",
+    "why": "Implementation of clearer error message for key missing",
+    "lastChecked": "2026-04-05"
+  },
+  {
+    "id": "E-015",
+    "topic": "Runtime Verification",
+    "source": ".venv/bin/python3 scripts/image_gen.py",
+    "why": "Manual check of the error output",
+    "lastChecked": "2026-04-05"
   }
 ]

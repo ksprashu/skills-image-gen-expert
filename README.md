@@ -50,7 +50,7 @@ graph TD
 
 *   Gemini CLI installed.
 *   Python 3.9+
-*   A valid Google AI Studio or Google Cloud API Key with access to the Gemini 3 Pro/Flash models.
+*   A valid Google AI Studio or Google Cloud API Key with access to the Gemini 3 Pro/Flash models. In interactive sessions, the agent will securely prompt you for this key if it is not already set in your environment.
 
 ## 📦 Installation
 
@@ -102,10 +102,11 @@ The underlying scripts used by this skill require specific Python packages. If y
     ```bash
     pip install -r requirements.txt
     ```
-3.  Set your API Key:
+3.  Set your API Key (Optional for interactive use):
     ```bash
     export GOOGLE_API_KEY="your-api-key-here"
     ```
+    *Note: If you skip this, the Gemini CLI agent will securely prompt you for the key when you first attempt to generate an image.*
 
 ## 📖 Usage
 

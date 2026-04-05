@@ -24,7 +24,8 @@ from PIL import Image
 def get_client(api_key: Optional[str] = None):
     key = api_key or os.environ.get("GOOGLE_API_KEY")
     if not key:
-        print("❌ Error: GOOGLE_API_KEY not found in environment or provided via --api-key.")
+        print("❌ Error: GOOGLE_API_KEY not found in environment.")
+        print("Please set the GOOGLE_API_KEY environment variable or provide it via the --api-key argument.")
         sys.exit(1)
     return genai.Client(api_key=key)
 

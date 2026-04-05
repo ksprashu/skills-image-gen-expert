@@ -17,7 +17,7 @@ This skill provides specialized tools and workflows for generating high-fidelity
 
 ## Prerequisites
 
-*   **API Key**: Ensure `GOOGLE_API_KEY` is set in the environment. This key must have access to the `gemini-3-pro-image-preview` and `gemini-3-flash-preview` models.
+*   **API Key**: Ensure `GOOGLE_API_KEY` is set in the environment. If missing, the agent will securely prompt you for it using the `ask_user` tool during the session. This key must have access to the `gemini-3-pro-image-preview` and `gemini-3-flash-preview` models.
 *   **Dependencies**: The bundled script requires `google-genai` and `Pillow` (PIL).
 
 ## Usage
@@ -72,28 +72,34 @@ python scripts/image_gen.py --prompt "A minimalist vector icon of a lightbulb" -
 
 *As an AI Agent utilizing this skill, follow these operational guidelines:*
 
-### 1. Asset Needs Analysis (Pre-Generation)
+### 1. Secure API Key Management
+Before executing any generation command, check if the `GOOGLE_API_KEY` environment variable is available.
+- **If missing**: You MUST prompt the user for it securely using the `ask_user` tool.
+    - **Prompt Format**: `ask_user(questions=[{"header": "Auth", "question": "Please provide your GOOGLE_API_KEY to generate images securely (it will only be used for the current session):", "type": "text", "placeholder": "API Key..."}])`
+- **Re-use**: Once you have the key, store it in your session context. For every subsequent call to `scripts/image_gen.py`, pass this key explicitly using the `--api-key` argument.
+
+### 2. Asset Needs Analysis (Pre-Generation)
 When given a blog post or article, do not randomly generate images. First, identify key concepts:
 - **Header/Intro**: Suggest a `16:9` Hero Image.
 - **Processes/Workflows**: Suggest a Flowchart or Architecture Diagram (`1:1` or `4:3`).
 - **Data/Statistics**: Suggest an Infographic.
 Formulate a plan for the assets needed from scratch based on the content's tone and subject.
 
-### 2. Brand & Style Consistency
+### 3. Brand & Style Consistency
 Always prioritize generating assets from scratch over relying on pre-existing content. Use the `--references` flag to pass in generic brand guidelines, color palettes, or mood boards if requested, ensuring all assets generated for a single blog match stylistically.
 
-### 3. Multi-Step Execution Loop
+### 4. Multi-Step Execution Loop
 The core script `scripts/image_gen.py` handles verification internally.
 - **Observe Output:** Pay attention to the stdout (`🧐 Verifying image...`).
 - **Failures:** If verification fails, it's often due to text in infographics. Adjust your `--prompt` to be simpler or more explicit about text placement, then retry.
 
-### 4. Aspect Ratio Mapping
+### 5. Aspect Ratio Mapping
 Map the required asset type to the optimal `--ar` argument:
 - **Hero / Header**: `16:9`
 - **Standard Inline / Diagram**: `4:3`
 - **Icon / Spot Illustration**: `1:1`
 
-### 5. Prompt Engineering for Content Assets
+### 6. Prompt Engineering for Content Assets
 - **Infographics**: Use keywords like *"flat vector illustration, clean lines, infographic layout, solid background"*.
 - **Diagrams**: Use keywords like *"flowchart, nodes and edges, technical diagram, clear text labels"*.
 - **Photographic Heroes**: Use keywords like *"cinematic lighting, photorealistic, wide shot, negative space for text"*.
