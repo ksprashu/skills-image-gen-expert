@@ -1,13 +1,16 @@
-# Image Generation Expert (Gemini CLI Skill)
+# Blog & Content Image Generation Expert (Gemini CLI Skill)
 
-This repository provides an advanced image generation and verification skill for the [Gemini CLI](https://geminicli.com). It leverages Google's **Gemini 3 Pro** (Nano Banana Pro) for state-of-the-art image synthesis and **Gemini 3 Flash** for programmatic quality and compliance verification.
+This repository provides an advanced, dynamic image and visual asset generation skill for the Gemini CLI. It leverages Google's **Gemini 3 Pro** (Nano Banana Pro) for state-of-the-art visual synthesis and **Gemini 3 Flash** for programmatic quality and compliance verification.
+
+Designed specifically for technical writing, blogs, and documentation, this skill autonomously determines the right type of asset (e.g., hero image, flowchart, infographic) and generates it from scratch while maintaining your brand's style.
 
 ## 🚀 Features
 
-1.  **High-Fidelity Generation**: Uses `gemini-3-pro-image-preview`.
-2.  **Character Consistency**: Supports multimodal reference images to maintain identity (e.g., specific characters, logos, or styles) across multiple generations. Includes built-in assets for quick reference.
-3.  **Automated Verification**: Uses `gemini-3-flash-preview` to automatically evaluate generated images against your prompt constraints, ensuring high quality and subject accuracy.
-4.  **Custom Aspect Ratios**: Easily generate images in 16:9, 1:1, or 4:3 formats.
+1.  **Dynamic Asset Needs Analysis**: Instruct the agent to read a draft blog post, and it will automatically plan and generate the required visual assets (heroes, inline diagrams, infographics).
+2.  **High-Fidelity Generation**: Uses `gemini-3-pro-image-preview` for complex image and diagram generation.
+3.  **Brand & Style Consistency**: Supports multimodal reference images (`--references`) to maintain a specific visual style, color palette, or branding across multiple generations without relying on legacy character templates.
+4.  **Automated Verification**: Uses `gemini-3-flash-preview` to automatically evaluate generated images against your prompt constraints (especially text legibility in diagrams), ensuring high quality and subject accuracy.
+5.  **Custom Aspect Ratios**: Easily generate images in 16:9 (heroes), 1:1 (icons), or 4:3 (diagrams) formats.
 
 ## 🏗️ Architecture & Workflow
 
@@ -15,16 +18,16 @@ The skill follows a "Generate-Verify-Retry" loop to ensure high-quality outputs 
 
 ```mermaid
 graph TD
-    A[User Prompt] --> B[Gemini CLI Skill]
-    B --> C{Reference Assets?}
-    C -- Yes --> D[Attach Images]
+    A[Blog Text / Prompt] --> B[Gemini CLI Skill]
+    B --> C{Style Reference?}
+    C -- Yes --> D[Attach Brand Guidelines]
     C -- No --> E[Text-only Prompt]
     D --> F[Gemini 3 Pro Generation]
     E --> F
-    F --> G[Generated Image]
+    F --> G[Generated Asset]
     G --> H[Gemini 3 Flash Verification]
     H -- Pass --> I[Save Image]
-    H -- Fail --> J[Retry Generation]
+    H -- Fail --> J[Refine Prompt & Retry]
     J --> F
 ```
 
@@ -33,9 +36,7 @@ graph TD
 ```text
 .
 ├── .gemini/            # Vector Protocol state and context
-├── assets/             # Built-in character reference images
-│   ├── char-unit9.png  # Unit 9 (Cyberpunk Cat)
-│   └── ...             # Other character assets
+├── assets/             # Directory for your brand/style reference guides
 ├── references/         # Placeholder for external references
 ├── scripts/
 │   └── image_gen.py    # Core generation & verification script
@@ -47,7 +48,7 @@ graph TD
 
 ## 🛠️ Prerequisites
 
-*   [Gemini CLI](https://geminicli.com/docs/getting-started) installed.
+*   Gemini CLI installed.
 *   Python 3.9+
 *   A valid Google AI Studio or Google Cloud API Key with access to the Gemini 3 Pro/Flash models.
 
@@ -72,7 +73,7 @@ If you clone the repository locally and want to use or edit the skill:
 1.  Clone the repository:
     ```bash
     git clone https://github.com/ksprashu/skills-image-gen-expert.git
-    cd image-gen-expert
+    cd skills-image-gen-expert
     ```
 
 2.  Link the local folder to your Gemini CLI workspace:
@@ -108,24 +109,24 @@ The underlying scripts used by this skill require specific Python packages. If y
 
 ## 📖 Usage
 
-Once the skill is installed and loaded into Gemini CLI, you can simply ask the agent to use it:
+Once the skill is installed and loaded into Gemini CLI, you can ask the agent to use it for your content:
 
-> "Use the image-gen-expert skill to create a cyberpunk cat detective. Make sure he's wearing a trenchcoat."
+> "Read my `blog_draft.md` and use the image-gen-expert skill to generate a 16:9 hero image for the header, and an infographic explaining the architecture in section 2."
 
 ### Advanced Examples
 
-**Maintaining Character Consistency:**
-> "Generate an image of Unit 9 (using assets/char-unit9.png) in a high-speed chase through a neon-lit rain-slicked street. 16:9 aspect ratio."
+**Maintaining Brand Consistency:**
+> "Generate an infographic explaining a CI/CD pipeline. Use `assets/brand-style-guide.png` as a style reference so the colors match our corporate theme."
 
 **Text Integration & Verification:**
-> "Create a vintage-style travel poster for 'MARS COLONY'. Ensure the text is clear and readable."
+> "Create a flowchart diagram showing user authentication. Ensure the boxes contain clear, readable text like 'Login' and 'Token Validation'."
 
 ### Manual Script Usage
 
 You can also run the core generation script directly from your terminal:
 
 ```bash
-python scripts/image_gen.py --prompt "Unit 9 (Cyberpunk Cat) drinking coffee" --references "assets/char-unit9.png" --output "unit9_coffee.png"
+python scripts/image_gen.py --prompt "A cinematic, wide-shot hero image representing modern cloud architecture" --ar "16:9" --output "hero.png"
 ```
 
 Use `python scripts/image_gen.py --help` for a full list of arguments.
