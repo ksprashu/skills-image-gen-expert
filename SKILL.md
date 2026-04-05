@@ -1,5 +1,5 @@
 ---
-name: skills_image-gen-expert
+name: image-gen-expert
 description: Advanced image generation and verification using Gemini 3 Pro (Nano Banana Pro) and Flash. Supports character consistency via multimodal reference images and automated quality/compliance verification. Use this skill when the user asks to generate, iterate on, or verify images.
 ---
 
@@ -24,7 +24,7 @@ This skill provides specialized tools and workflows for high-fidelity image gene
 
 ### Generating an Image
 
-To generate an image, use the `scripts/image_gen.py` script. 
+To generate an image, use the `scripts/image_gen.py` script.
 
 **Basic Usage:**
 ```bash
@@ -76,7 +76,7 @@ python scripts/image_gen.py --prompt "Cinematic wide shot of a desert" --ar "16:
 When a user asks to generate a known character (e.g., "Unit 9", "Pixie"), check the `assets/` directory first. Always prefer using the reference image via `--references` to maintain identity consistency.
 
 ### 2. Multi-Step Execution Loop
-The core script `scripts/image_gen.py` handles verification internally. 
+The core script `scripts/image_gen.py` handles verification internally.
 - **Observe Output:** Pay attention to the stdout. It will explicitly state `🧐 Verifying image...` followed by `✅ Success` or `🔄 Verification failed: [REASON]`.
 - **Failures:** If the script exits with status 1 after failing verification, analyze the reason. If the reason suggests the prompt was misinterpreted, refine the `--prompt` in your next attempt.
 
