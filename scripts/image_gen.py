@@ -16,6 +16,7 @@ import os
 import sys
 import time
 import io
+import pathlib
 import argparse
 from typing import Optional, List
 from google import genai
@@ -28,6 +29,27 @@ def get_client(api_key: Optional[str] = None):
         print("Please set the GOOGLE_API_KEY environment variable or provide it via the --api-key argument.")
         sys.exit(1)
     return genai.Client(api_key=key)
+
+def refine_prompt(client: genai.Client, original_prompt: str, failure_reason: str, model: str) -> str:
+    """Uses Gemini to refine the prompt based on verification feedback."""
+    try:
+        refinement_prompt = f"""
+        You are an expert prompt engineer. We are trying to generate an image using a text-to-image generator.
+        The original prompt was: "{original_prompt}"
+        The generated image failed verification with the following feedback: "{failure_reason}"
+        
+        Please rewrite the prompt to address this feedback. Keep the core intent and style, but make specific adjustments, clearer layouts, or stronger guidance on text placement/legibility to resolve the feedback.
+        Return ONLY the new refined prompt text. Do not wrap it in extra quotes or markdown blocks.
+        """
+        response = client.models.generate_content(
+            model=model,
+            contents=refinement_prompt
+        )
+        refined = response.text.strip()
+        return refined if refined else original_prompt
+    except Exception as e:
+        print(f"⚠️ Failed to refine prompt automatically: {e}")
+        return original_prompt
 
 def verify_image(client: genai.Client, image: Image.Image, prompt: str, model: str) -> tuple[bool, str]:
     """Verify image compliance using Gemini 3 Flash."""
@@ -55,7 +77,7 @@ def main():
     parser = argparse.ArgumentParser(description="Advanced Image Generation with Verification")
     parser.add_argument("--prompt", type=str, required=True, help="Image generation prompt")
     parser.add_argument("--references", type=str, help="Comma-separated paths to reference images")
-    parser.add_argument("--ar", type=str, default="1:1", help="Aspect ratio (e.g., 16:9, 1:1)")
+    parser.add_argument("--ar", type=str, default="1:1", choices=["1:1", "16:9", "4:3", "3:2", "2:3", "3:4", "9:16"], help="Aspect ratio")
     parser.add_argument("--output", type=str, default="output.png", help="Output filename")
     parser.add_argument("--no-verify", action="store_true", help="Disable verification")
     parser.add_argument("--api-key", type=str, help="Override GOOGLE_API_KEY")
@@ -66,15 +88,21 @@ def main():
     
     client = get_client(args.api_key)
     
+    # Create parent directories for output if they don't exist
+    output_path = pathlib.Path(args.output)
+    if output_path.parent != pathlib.Path('.'):
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        
     # Prepare contents for multimodal request
-    contents = [f"{args.prompt} Aspect Ratio {args.ar}."]
+    current_prompt = args.prompt
+    reference_images = []
     
     if args.references:
         for ref_path in args.references.split(","):
             ref_path = ref_path.strip()
             if os.path.exists(ref_path):
                 try:
-                    contents.append(Image.open(ref_path))
+                    reference_images.append(Image.open(ref_path))
                     print(f"📎 Attached reference: {ref_path}")
                 except Exception as e:
                     print(f"⚠️ Failed to load reference {ref_path}: {e}")
@@ -88,6 +116,11 @@ def main():
     
     while attempt < max_attempts:
         try:
+            # Build contents list dynamically (since current_prompt can be refined)
+            contents = [f"{current_prompt} Aspect Ratio {args.ar}."]
+            if reference_images:
+                contents.extend(reference_images)
+                
             response = client.models.generate_content(
                 model=args.model,
                 contents=contents
@@ -111,7 +144,7 @@ def main():
                 
                 if not args.no_verify:
                     print("🧐 Verifying image...")
-                    success, reason = verify_image(client, img, args.prompt, args.verifier_model)
+                    success, reason = verify_image(client, img, current_prompt, args.verifier_model)
                     if success:
                         img.save(args.output)
                         print(f"✅ Success: Image saved to {args.output}")
@@ -120,7 +153,10 @@ def main():
                         print(f"🔄 Verification failed: {reason}")
                         attempt += 1
                         if attempt < max_attempts:
-                            print("Retrying generation...")
+                            print("🧐 Refining prompt based on feedback...")
+                            current_prompt = refine_prompt(client, current_prompt, reason, args.verifier_model)
+                            print(f"📝 New Prompt: {current_prompt}")
+                            print("Retrying generation with refined prompt...")
                             continue
                         else:
                             img.save(args.output)
