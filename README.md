@@ -1,5 +1,7 @@
 # Blog & Content Image Generation Expert (Gemini CLI Skill)
 
+[![npx skills](https://img.shields.io/badge/skills.sh-installed-brightgreen)](https://skills.sh)
+
 This repository provides an advanced, dynamic image and visual asset generation skill for the Gemini CLI. It leverages Google's **Gemini 3 Pro** (Nano Banana Pro) for state-of-the-art visual synthesis and **Gemini 3 Flash** for programmatic quality and compliance verification.
 
 Designed specifically for technical writing, blogs, and documentation, this skill autonomously determines the right type of asset (e.g., hero image, flowchart, infographic) and generates it from scratch while maintaining your brand's style.
@@ -54,10 +56,14 @@ graph TD
 
 ## 📦 Installation
 
-You can install this skill directly using the Gemini CLI.
+### Recommended: Using `npx skills`
+Install this skill into your agent environment using `npx skills`:
 
-### Option 1: Install from GitHub (Recommended)
+```bash
+npx skills add ksprashu/skills-image-gen-expert
+```
 
+### Alternative: Install using Gemini CLI
 To install this skill directly from the repository into your local workspace:
 
 ```bash
