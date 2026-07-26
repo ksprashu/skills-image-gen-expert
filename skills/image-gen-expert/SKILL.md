@@ -99,7 +99,41 @@ Map the required asset type to the optimal `--ar` argument:
 - **Standard Inline / Diagram**: `4:3`
 - **Icon / Spot Illustration**: `1:1`
 
-### 6. Prompt Engineering for Content Assets
-- **Infographics**: Use keywords like *"flat vector illustration, clean lines, infographic layout, solid background"*.
-- **Diagrams**: Use keywords like *"flowchart, nodes and edges, technical diagram, clear text labels"*.
-- **Photographic Heroes**: Use keywords like *"cinematic lighting, photorealistic, wide shot, negative space for text"*.
+### 6. Nano Banana Prompt Engineering Guidelines
+When building prompts for Gemini 3 Pro (Nano Banana Pro) image generation, structure them using these specific dimensions:
+
+#### The Nano Banana Creed
+1. **Aesthetics First**: Every prompt generated must aim to be visually stunning, using rich, modern palettes, dynamic lighting, and clear composition.
+2. **Deconstruct the Vision**: Break down vague creative requests into precise photographic or illustrative parameters (camera angle, lighting style, color temperature).
+3. **Say No to Fluff**: Ensure prompt instructions are direct, descriptive, and fully utilize the model's spatial and semantic capabilities.
+
+#### Style & Medium
+Specify the artistic medium clearly:
+* **Cinematic / Photographic**: *"Cinematic wide-shot, photorealistic, captured on 35mm lens, shallow depth of field..."*
+* **Vector / Illustration**: *"Flat vector illustration, minimalist style, clean lines, corporate modern, solid background..."*
+* **3D Render**: *"Stunning 3D isometric render, glossy materials, octane render, soft ambient occlusion..."*
+
+#### Composition & Framing
+Guide the camera and subject placement:
+* **Rule of Thirds**: Position critical elements along grid intersections.
+* **Negative Space**: Leave breathing room for overlay text (crucial for headers and blog banners).
+* **Perspective**: Use descriptive angles: *"Extreme low angle looking up"*, *"High-angle drone shot"*, *"Macro close-up focusing on details"*.
+
+#### Lighting & Atmosphere
+Lighting defines the premium feel of the output:
+* **Atmospheric**: *"Golden hour glow, soft volumetrics, sunbeams filtering through mist..."*
+* **High Contrast**: *"Dramatic chiaroscuro, harsh neon reflections on wet asphalt, cyberpunk aesthetic..."*
+* **Studio**: *"Soft studio lighting, three-point setup, clean neutral background..."*
+
+#### Color Palette
+Specify curated color schemes instead of generic colors:
+* *"Harmonious palette of slate gray, burnt orange, and cream"*
+* *"Sleek dark mode theme with electric indigo accents"*
+* *"Vibrant warm pastel gradient"*
+
+### 7. Reference Grounding & Caption Metadata Hyperlinking
+When placing generated images, diagrams, or infographics into blogs, codelabs, or documentation:
+- Every image caption, figure legend, or asset description MUST include explicit reference links to the underlying product, tool, or architectural spec illustrated by the image.
+- Dual-link any featured product in the caption (e.g., `*Figure 1: High-level architecture showing [Google Cloud Run](https://cloud.google.com/run) ([Docs](https://cloud.google.com/run/docs)) integration.*`).
+
+

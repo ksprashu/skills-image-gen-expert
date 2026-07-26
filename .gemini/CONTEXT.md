@@ -1,7 +1,7 @@
 # Project Context: skills-image-gen-expert
 
 ## 1. Vision & Purpose
-*   **Goal:** Provide an advanced image generation and verification skill for Gemini CLI.
+*   **Goal:** Provide an advanced image generation and verification skill for Google Antigravity and Agentic AI tools.
 *   **Core Logic:** Uses `gemini-3-pro-image-preview` for generation and `gemini-3-flash-preview` for quality/compliance verification. Supports character consistency via multimodal reference images.
 
 ## 2. Technical Stack
