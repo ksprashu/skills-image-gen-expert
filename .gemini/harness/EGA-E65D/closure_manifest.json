@@ -1,0 +1,10 @@
+{
+  "short_id": "EGA-E65D",
+  "goal_summary": "Implement the code fixes, reference documentation, and test harness recommendations for image-gen-expert",
+  "domain": "general",
+  "closure_status": "COMPLETED",
+  "nodes_completed": 1,
+  "target_artifacts": [
+    ".gemini/harness/EGA-E65D/deliverable.md"
+  ]
+}

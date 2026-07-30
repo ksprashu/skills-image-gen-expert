@@ -1,0 +1,23 @@
+{
+  "short_id": "EGA-E65D",
+  "goal_summary": "Implement the code fixes, reference documentation, and test harness recommendations for image-gen-expert",
+  "domain": "general",
+  "nodes": [
+    {
+      "id": "node_01",
+      "name": "Initial Implementation Pass",
+      "persona_role": "Builder-Coder",
+      "grounding_concepts": [],
+      "depends_on": [],
+      "compile_html": false,
+      "spec_file": ".gemini/harness/EGA-E65D/tasks/task_01_spec.md",
+      "judge_prompt": ".gemini/harness/EGA-E65D/tasks/task_01_judge_prompt.md",
+      "target_artifact": ".gemini/harness/EGA-E65D/deliverable.md",
+      "static_verifier": ".gemini/harness/EGA-E65D/verify_static.py",
+      "dynamic_rubric": ".gemini/harness/EGA-E65D/rubric.json",
+      "status": "COMPLETED",
+      "retry_count": 0,
+      "max_retries": 3
+    }
+  ]
+}

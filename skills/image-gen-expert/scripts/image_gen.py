@@ -71,7 +71,8 @@ def verify_image(client: genai.Client, image: Image.Image, prompt: str, model: s
         result = response.text.strip()
         return result.startswith("YES"), result
     except Exception as e:
-        return True, f"Verification skipped due to error: {e}"
+        print(f"⚠️ Verification API error: {e}")
+        return False, f"Verification failed due to API error: {e}"
 
 def main():
     parser = argparse.ArgumentParser(description="Advanced Image Generation with Verification")
@@ -171,9 +172,16 @@ def main():
                 attempt += 1
                 
         except Exception as e:
+            err_msg = str(e)
             print(f"❌ Error during generation: {e}")
             attempt += 1
-            time.sleep(2)
+            if "429" in err_msg or "RESOURCE_EXHAUSTED" in err_msg.upper():
+                import random
+                backoff = (2 ** attempt) * 3 + random.uniform(0.5, 2.0)
+                print(f"⏳ Rate limit encountered (429/ResourceExhausted). Retrying with exponential backoff in {backoff:.1f}s...")
+                time.sleep(backoff)
+            else:
+                time.sleep(2)
 
     sys.exit(1)
 

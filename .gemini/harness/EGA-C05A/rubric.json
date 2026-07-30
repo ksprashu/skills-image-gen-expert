@@ -1,0 +1,30 @@
+{
+  "rubric_id": "RUBRIC-EGA-C05A",
+  "short_id": "EGA-C05A",
+  "criteria": [
+    {
+      "id": "completeness",
+      "name": "Requirement Completeness",
+      "description": "Does the artifact fully address all constraints specified in the user goal?",
+      "threshold": 8
+    },
+    {
+      "id": "clarity_and_structure",
+      "name": "Clarity & Structural Precision",
+      "description": "Is the content well-organized with clean typography, clear headings, high-contrast tables, and zero visual overlap?",
+      "threshold": 8
+    },
+    {
+      "id": "verifiability",
+      "name": "Verifiability & Fact Grounding",
+      "description": "Are claims supported by data, logic, or explicit source references?",
+      "threshold": 8
+    },
+    {
+      "id": "scope_and_formatting",
+      "name": "Scope & Formatting Appropriateness",
+      "description": "Is the deliverable format appropriate? Are internal artifacts kept in raw Markdown without unnecessary HTML file compilation or visual bloat?",
+      "threshold": 8
+    }
+  ]
+}
