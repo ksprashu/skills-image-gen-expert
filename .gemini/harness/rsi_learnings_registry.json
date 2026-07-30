@@ -1,0 +1,14 @@
+{
+  "learnings": [
+    {
+      "short_id": "EGA-E65D",
+      "timestamp": "2026-07-30T17:31:07.957448",
+      "goal_summary": "Implement the code fixes, reference documentation, and test harness recommendations for image-gen-expert",
+      "domain": "general",
+      "total_retries": 0,
+      "defects_count": 0,
+      "defects": [],
+      "key_learning": "Domain 'general' run completed with 0 retries. Verified static verifiers and judge rubrics."
+    }
+  ]
+}
