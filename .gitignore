@@ -10,8 +10,10 @@ ENV/
 .DS_Store
 Thumbs.db
 
-# Output Images
+# Output Images (Ignore generated images, keep repository documentation & asset images)
 *.png
 *.jpg
 *.jpeg
 !assets/*.png
+!docs/images/*.png
+!docs/images/*.jpg
