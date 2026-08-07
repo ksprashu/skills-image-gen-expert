@@ -1,139 +1,101 @@
 ---
 name: image-gen-expert
-description: Advanced dynamic image, infographic, and blog asset generation using Gemini 3 Pro (Nano Banana Pro) and Flash. Supports style/brand consistency via multimodal reference images and automated quality/compliance verification. Use this skill when the user asks to generate visual assets for blogs, articles, or diagrams from scratch.
+description: Advanced dynamic image, infographic, and blog asset generation using Gemini 3.1 Flash Image (Nano Banana 2), Flash Lite, and Gemini 3 Pro. Supports automatic series visual consistency, image editing/refinement via multimodal reference images, and automated quality/compliance verification with model fallback chains. Use this skill when generating visual assets for blogs, articles, or editing existing graphics.
 ---
 
 # Blog & Content Image Generation Expert
 
-This skill provides specialized tools and workflows for generating high-fidelity, dynamic visual assets for content creation (blogs, articles, documentation), ensuring brand/style consistency and visual compliance through automated verification.
+This skill provides specialized tools and workflows for generating high-fidelity, dynamic visual assets for content creation (blogs, articles, documentation), ensuring brand/style consistency and visual compliance through automated verification and intelligent model fallback chains.
 
 ## Capabilities
 
-1.  **Dynamic Asset Needs Analysis**: Capable of reading text (e.g., a blog draft) and determining the most appropriate visual assets (e.g., a flowchart for a process, a 16:9 hero image for the header, an infographic for statistics).
-2.  **High-Fidelity Generation**: Uses `gemini-3-pro-image-preview` for state-of-the-art image, diagram, and infographic synthesis.
-3.  **Brand & Style Consistency**: Supports multimodal reference images (`--references`) to maintain a specific visual style, color palette, or branding across multiple generations from scratch.
-4.  **Automated Verification**: Uses `gemini-3-flash-preview` to programmatically verify that the generated output matches the user's prompt, data accuracy, and quality constraints.
-5.  **Custom Aspect Ratios**: Supports explicit aspect ratio configuration (e.g., `16:9` for heroes, `1:1` for inline diagrams, `4:3`).
+1.  **Dynamic Asset Needs Analysis**: Reads text (e.g., a blog draft) and determines the most appropriate visual assets (e.g., a flowchart for a process, a 16:9 hero image for the header, an infographic for statistics).
+2.  **High-Fidelity Generation**: Uses `gemini-3.1-flash-image` as the primary workhorse model for state-of-the-art 4K image, diagram, and infographic synthesis.
+3.  **Automatic Series Style Grounding**: Automatically reuses previously generated images in a session as reference inputs for subsequent images to guarantee visual cohesion across a whole article or series.
+4.  **Image Editing & Sequential Refinement**: Edits existing images by passing the target image as a reference (`--references target.png`) along with modification instructions.
+5.  **Intelligent Model Fallback Chain**: Automatically cascades from `gemini-3.1-flash-image` -> `gemini-3.1-flash-lite-image` -> `gemini-3-pro-image` upon API rate limits or model errors.
+6.  **Automated Verification**: Uses Gemini Vision to programmatically verify output quality, accuracy, and text legibility (retrying up to 3 times by default).
+7.  **Custom Aspect Ratios**: Supports explicit aspect ratio configuration (`16:9`, `1:1`, `4:3`, `3:4`, `9:16`).
+
+---
+
+## 🎨 Automatic Reference Usage Patterns
+
+### Pattern A: Generating a Series of Images for an Article / Blog
+When creating multiple visual assets for a single document or blog post:
+1. **Generate Asset #1** (e.g., Hero image `hero.png`).
+2. **Auto-Ground Subsequent Assets**: For Assets #2, #3, etc. (e.g., `flowchart.png`, `infographic.png`), **automatically pass `--references "hero.png"`** to `scripts/image_gen.py`.
+3. **Outcome**: Gemini matches the visual style, color scheme, lighting, and line weight of `hero.png` across every figure in the entire article.
+
+### Pattern B: Editing & Modifying an Existing Image
+When updating or tweaking an existing graphic (e.g., *"Add a database node to `arch.png`"*, *"Change the theme of `banner.png` to dark mode"*):
+1. **Pass the Target Image**: Always pass the existing file via `--references "path/to/existing.png"`.
+2. **Describe the Delta**: Specify what to keep and what to change in `--prompt`.
+3. **Outcome**: Gemini preserves the composition and visual structure of the reference while making the requested modification.
+
+### Pattern C: Workspace Brand Auto-Detection
+If any reference image exists in `assets/` (e.g., `assets/brand_style.png`), the agent automatically attaches it as a reference for all new image generations in the project.
+
+---
 
 ## Prerequisites
 
-*   **API Key**: Ensure `GOOGLE_API_KEY` is set in the environment. If missing, the agent will securely prompt you for it using the `ask_user` tool during the session. This key must have access to the `gemini-3-pro-image-preview` and `gemini-3-flash-preview` models.
+*   **API Key**: Ensure `GOOGLE_API_KEY` is set in the environment. If missing, the agent will securely prompt you for it using the `ask_user` tool during the session.
 *   **Dependencies**: The bundled script requires `google-genai` and `Pillow` (PIL).
 
 ## Usage
 
-### Generating an Asset
+### Generating & Editing Assets
 
-To generate an image, use the `scripts/image_gen.py` script.
-
-**Basic Usage (Hero Image):**
+**1. Standalone Hero Image:**
 ```bash
 python scripts/image_gen.py --prompt "A cinematic, wide-shot hero image representing modern cloud architecture, corporate blue tones" --ar "16:9" --output "hero.png"
 ```
 
-**With Reference Images (Style/Brand Consistency):**
+**2. Auto-Grounded Series Image (Passing Hero as Reference):**
 ```bash
-python scripts/image_gen.py --prompt "An infographic explaining the CI/CD pipeline" --references "path/to/brand-style-guide.png" --ar "4:3" --output "cicd_infographic.png"
+python scripts/image_gen.py --prompt "An architecture diagram showing microservices connected to a gateway" --references "hero.png" --ar "4:3" --output "architecture.png"
 ```
 
-**Custom Aspect Ratio & No Verification (Fast Draft):**
+**3. Editing an Existing Image:**
 ```bash
-python scripts/image_gen.py --prompt "A minimalist vector icon of a lightbulb" --ar "1:1" --no-verify --output "icon.png"
+python scripts/image_gen.py --prompt "Based on the reference diagram, add a Redis caching service block next to the database" --references "architecture.png" --ar "4:3" --output "architecture_v2.png"
 ```
 
 ### Script Arguments
 
 | Argument | Description | Default |
 | :--- | :--- | :--- |
-| `--prompt` | **Required.** The text description of the image/infographic. | N/A |
-| `--references` | Comma-separated paths to reference images for style/brand guidance. | None |
-| `--ar` | Aspect ratio (e.g., `16:9`, `1:1`, `4:3`). | `1:1` |
+| `--prompt` | **Required.** The text description or edit instructions. | N/A |
+| `--references` | Comma-separated paths to reference images for series consistency or image editing. | None |
+| `--ar` | Aspect ratio (`16:9`, `1:1`, `4:3`, `3:2`, `2:3`, `3:4`, `9:16`). | `1:1` |
 | `--output` | Filename for the generated image. | `output.png` |
+| `--max-attempts` | Maximum attempts for generate-verify-refine loop. | `3` |
 | `--no-verify` | Skip the automated verification step. | False |
-| `--api-key` | Optional override for the `GOOGLE_API_KEY` environment variable. | None |
-| `--model` | Image generation model. | `gemini-3-pro-image-preview` |
-| `--verifier-model` | Model used for automated verification. | `gemini-3-flash-preview` |
-
-## Workflow Patterns
-
-1.  **Content Analysis**: Before generating, analyze the source text to determine *what* assets would add value (Hero, Inline Graphic, Diagram, Callout).
-2.  **Initial Generation**: Craft a highly specific prompt (including layout and style keywords) and let the skill verify the quality.
-3.  **Iterative Refinement**: If verification fails (especially for text legibility in infographics), use the failure reason to refine the prompt, ensuring text is clearly quoted (`reads "TEXT"`).
-
-## Troubleshooting
-
-*   **429 Resource Exhausted**: Image generation models often have lower rate limits. Wait at least 10 seconds between calls.
-*   **Safety Filters**: If no image is returned, try a less sensitive prompt.
-*   **Illegible Text**: For complex diagrams, ensure the prompt explicitly says "reads 'TEXT'". If it fails verification, try again or simplify the text content.
+| `--api-key` | Optional override for `GOOGLE_API_KEY`. | None |
+| `--model` | Primary image generation model. | `gemini-3.1-flash-image` |
+| `--verifier-model` | Model used for automated verification. | `gemini-3.1-flash-image` |
 
 ---
 
-## 🤖 Agent Instructions (Internal)
+## 🤖 Agent Operational Instructions
 
-*As an AI Agent utilizing this skill, follow these operational guidelines:*
+As an AI Agent utilizing this skill, enforce these automatic rules:
 
-### 1. Secure API Key Management
-Before executing any generation command, check if the `GOOGLE_API_KEY` environment variable is available.
-- **If missing**: You MUST prompt the user for it securely using the `ask_user` tool.
-    - **Prompt Format**: `ask_user(questions=[{"header": "Auth", "question": "Please provide your GOOGLE_API_KEY to generate images securely (it will only be used for the current session):", "type": "text", "placeholder": "API Key..."}])`
-- **Re-use**: Once you have the key, store it in your session context. For every subsequent call to `scripts/image_gen.py`, pass this key explicitly using the `--api-key` argument.
+### Rule 1: Automatic Series Consistency
+When generating multiple visual assets for a single user prompt or blog post:
+- Save the first generated image (e.g., `hero.png`).
+- For every subsequent image in the same series, **automatically pass `--references "hero.png"`** to `scripts/image_gen.py`.
 
-### 2. Asset Needs Analysis (Pre-Generation)
-When given a blog post or article, do not randomly generate images. First, identify key concepts:
-- **Header/Intro**: Suggest a `16:9` Hero Image.
-- **Processes/Workflows**: Suggest a Flowchart or Architecture Diagram (`1:1` or `4:3`).
-- **Data/Statistics**: Suggest an Infographic.
-Formulate a plan for the assets needed from scratch based on the content's tone and subject.
+### Rule 2: Automatic Image Editing / Iteration
+When the user asks to edit, revise, or update an existing image:
+- Locate the existing image file.
+- Automatically execute `scripts/image_gen.py` with `--references "path/to/existing.png"`.
 
-### 3. Brand & Style Consistency
-Always prioritize generating assets from scratch over relying on pre-existing content. Use the `--references` flag to pass in generic brand guidelines, color palettes, or mood boards if requested, ensuring all assets generated for a single blog match stylistically.
+### Rule 3: Repository Brand Detection
+Check if `assets/` contains any style reference image. If found, include it in `--references` by default.
 
-### 4. Multi-Step Execution Loop
-The core script `scripts/image_gen.py` handles verification internally.
-- **Observe Output:** Pay attention to the stdout (`🧐 Verifying image...`).
-- **Failures:** If verification fails, it's often due to text in infographics. Adjust your `--prompt` to be simpler or more explicit about text placement, then retry.
-
-### 5. Aspect Ratio Mapping
-Map the required asset type to the optimal `--ar` argument:
-- **Hero / Header**: `16:9`
-- **Standard Inline / Diagram**: `4:3`
-- **Icon / Spot Illustration**: `1:1`
-
-### 6. Nano Banana Prompt Engineering Guidelines
-When building prompts for Gemini 3 Pro (Nano Banana Pro) image generation, structure them using these specific dimensions:
-
-#### The Nano Banana Creed
-1. **Aesthetics First**: Every prompt generated must aim to be visually stunning, using rich, modern palettes, dynamic lighting, and clear composition.
-2. **Deconstruct the Vision**: Break down vague creative requests into precise photographic or illustrative parameters (camera angle, lighting style, color temperature).
-3. **Say No to Fluff**: Ensure prompt instructions are direct, descriptive, and fully utilize the model's spatial and semantic capabilities.
-
-#### Style & Medium
-Specify the artistic medium clearly:
-* **Cinematic / Photographic**: *"Cinematic wide-shot, photorealistic, captured on 35mm lens, shallow depth of field..."*
-* **Vector / Illustration**: *"Flat vector illustration, minimalist style, clean lines, corporate modern, solid background..."*
-* **3D Render**: *"Stunning 3D isometric render, glossy materials, octane render, soft ambient occlusion..."*
-
-#### Composition & Framing
-Guide the camera and subject placement:
-* **Rule of Thirds**: Position critical elements along grid intersections.
-* **Negative Space**: Leave breathing room for overlay text (crucial for headers and blog banners).
-* **Perspective**: Use descriptive angles: *"Extreme low angle looking up"*, *"High-angle drone shot"*, *"Macro close-up focusing on details"*.
-
-#### Lighting & Atmosphere
-Lighting defines the premium feel of the output:
-* **Atmospheric**: *"Golden hour glow, soft volumetrics, sunbeams filtering through mist..."*
-* **High Contrast**: *"Dramatic chiaroscuro, harsh neon reflections on wet asphalt, cyberpunk aesthetic..."*
-* **Studio**: *"Soft studio lighting, three-point setup, clean neutral background..."*
-
-#### Color Palette
-Specify curated color schemes instead of generic colors:
-* *"Harmonious palette of slate gray, burnt orange, and cream"*
-* *"Sleek dark mode theme with electric indigo accents"*
-* *"Vibrant warm pastel gradient"*
-
-### 7. Reference Grounding & Caption Metadata Hyperlinking
-When placing generated images, diagrams, or infographics into blogs, codelabs, or documentation:
-- Every image caption, figure legend, or asset description MUST include explicit reference links to the underlying product, tool, or architectural spec illustrated by the image.
-- Dual-link any featured product in the caption (e.g., `*Figure 1: High-level architecture showing [Google Cloud Run](https://cloud.google.com/run) ([Docs](https://cloud.google.com/run/docs)) integration.*`).
-
-
+### Rule 4: Model Selection & Fallback Chain
+- Primary: `gemini-3.1-flash-image`
+- Secondary: `gemini-3.1-flash-lite-image` (automatically bypassed when `--references` are present, as flash-lite is not optimized for multi-reference grounding).
+- Tertiary: `gemini-3-pro-image` / `gemini-3-pro-image-preview`.

@@ -9,22 +9,31 @@
 
 An advanced, high-fidelity custom skill and script pipeline for autonomous visual asset, diagram, and infographic generation inside your agent workspace.
 
-The **Image Gen Expert** uses Google's state-of-the-art **Gemini 3 Pro** (Nano Banana Pro) for image synthesis and **Gemini 3 Flash** for programmatic, multi-step quality and compliance verification. It automatically analyzes drafts to determine visual requirements (heroes, flowcharts, or infographics) and generates them from scratch, matching your corporate brand's style guide.
+The **Image Gen Expert** uses Google's state-of-the-art **Gemini 3.1 Flash Image** (Nano Banana 2) for versatile 4K image synthesis with an intelligent fallback chain (`gemini-3.1-flash-image` -> `gemini-3.1-flash-lite-image` -> `gemini-3-pro-image`), alongside Gemini vision for multi-step quality and compliance verification.
+
+---
+
+## 🎨 Automatic Series Grounding & Image Editing
+
+The skill automatically leverages reference images (`--references`) across two key workflows:
+
+1. **Automatic Series Visual Cohesion**: When generating a series of graphics for an article or blog (e.g. Hero banner, Flowchart, Infographic), the agent automatically uses the first generated graphic as a style reference for all subsequent graphics.
+2. **Image Editing & Iteration**: When editing an existing graphic (e.g., *"Add a Redis caching node to `arch.png`"*), the skill automatically passes `arch.png` as a reference image to preserve the existing visual layout while applying modifications.
 
 ---
 
 ## 🔄 Generate-Verify-Retry Loop
 
-The skill executes an autonomous verification loop to ensure that all generated graphics (especially those containing text labels) are legible, correct, and professional before saving:
+The skill executes an autonomous verification loop (retrying up to 3 times by default) to ensure that all generated graphics (especially those containing text labels) are legible, correct, and professional before saving:
 
 ```mermaid
 graph TD
     Start[Draft Blog / Topic Input] --> Analyze[1. Analyze Asset Needs: Hero, Flowchart, Infographic]
-    Analyze --> BuildPrompt[2. Build Multi-modal Prompt with Style References]
-    BuildPrompt --> Synthesis[3. Gemini 3 Pro Synthesis]
-    Synthesis --> Verify[4. Gemini 3 Flash Verification]
+    Analyze --> BuildPrompt[2. Build Prompt with Auto-References]
+    BuildPrompt --> Synthesis[3. Gemini 3.1 Synthesis & Model Fallback]
+    Synthesis --> Verify[4. Gemini Vision Quality Verification]
     Verify -- Pass --> Save[5. Save Asset to disk]
-    Verify -- Fail --> Retry[6. Refine Prompt based on verification failure feedback]
+    Verify -- Fail (Attempts < 3) --> Retry[6. Refine Prompt via Gemini based on feedback]
     Retry --> Synthesis
     
     classDef steps fill:#0e101f,stroke:#7c4dff,stroke-width:2px,color:#fff;
@@ -39,9 +48,9 @@ The package contents are fully organized for installation via `npx skills`:
 
 | Path | Type | Purpose |
 | :--- | :--- | :--- |
-| `skills/image-gen-expert/SKILL.md` | Core Instructions | Detailed prompt patterns, aspect ratio mapping rules, and verifier heuristics. |
-| `skills/image-gen-expert/scripts/image_gen.py` | Python Engine | Executable script that interfaces with Google GenAI API to generate and verify images. |
-| `skills/image-gen-expert/assets/` | Brand Guides | Location to store style guidelines and reference pictures. |
+| `skills/image-gen-expert/SKILL.md` | Core Instructions | Detailed prompt patterns, aspect ratio mapping rules, and auto-reference guidelines. |
+| `skills/image-gen-expert/scripts/image_gen.py` | Python Engine | Executable script that interfaces with Google GenAI API with model fallback chain. |
+| `skills/image-gen-expert/assets/` | Style Guides | Optional location to store brand style guidelines and reference pictures. |
 | `requirements.txt` | Python Requirements | Defines python libraries required (`google-genai`, `Pillow`). |
 
 ---
@@ -63,8 +72,19 @@ npx skills add ksprashu/skills-image-gen-expert
    pip install -r requirements.txt
    ```
 
-### Execution Example
+### Execution Examples
 
-To generate custom graphics matching your draft, ask the agent:
+**1. Standalone Hero Banner:**
+```bash
+python scripts/image_gen.py --prompt "A cinematic hero image representing microservices" --ar "16:9" --output "hero.png"
+```
 
-> *"Read my `auth_design.md` and use image-gen-expert to create a 16:9 hero banner and a 4:3 flowchart diagram. Use `assets/corporate_brand.png` as our style reference."*
+**2. Auto-Grounded Series Diagram (Reusing Hero Style):**
+```bash
+python scripts/image_gen.py --prompt "An architecture diagram for microservices" --references "hero.png" --ar "4:3" --output "arch.png"
+```
+
+**3. Editing an Existing Image:**
+```bash
+python scripts/image_gen.py --prompt "Based on the reference, add a Redis cache box" --references "arch.png" --ar "4:3" --output "arch_v2.png"
+```
